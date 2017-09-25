@@ -27,7 +27,7 @@ end
 prompt('Welcome to Calculator! Enter your name')
 
 name = ''
-loop do 
+loop do
   name = Kernel.gets().chomp()
   if name.empty?()
     prompt("Make sure to use a valid name")
@@ -36,7 +36,7 @@ loop do
   end
 end
 prompt("Hi #{name}")
-loop do 
+loop do
   number1 = ''
   loop do
     prompt("What's the first number?")
@@ -61,9 +61,9 @@ loop do
 
   operator_prompt = <<-MSG
     What operation would you like to perform?
-    1) add 
-    2) subtract 
-    3) multiply 
+    1) add
+    2) subtract
+    3) multiply
     4) divide
   MSG
   prompt(operator_prompt)
