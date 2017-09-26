@@ -55,63 +55,76 @@ SET monthly_payment = loan_amount * ( monthly_int_rate / (1 - (1 + monthly_int_r
 PRINT monthly_payment
 =end
 
-#check if valid num, as either valid float, valid integer, or valid fractional expression
+# check if valid num, as either:
+# valid float, valid integer, or valid fractional expression
 def valid_num?(num)
   float?(num) || integer?(num) || rational?(num)
 end
+
 # is it a float?
 def float?(num)
   num.to_f.to_s == num
 end
+
 # is num an integer
 def integer?(num)
   num.to_i.to_s == num
 end
-# is num a numerator/denominator
-def fraction?(num)
-  #num.to_r.to_s == num
-  num.match(/\d+\/\d+/)
+
+# for purpose of this program,
+# only accept fraction with denominator > numerator
+def denominator_greater(num)
+  test = num.scan(/\d+/)
+  test.last > test.first
+  # num.to_r < 1
 end
+
+# is num a numerator/denominator
+def valid_fraction?(num)
+  # num.to_r.to_s == num
+  # check num, match cannot be called from nil class
+  num && num.match(%r(\d+\/\d+)) && denominator_greater(num)
+end
+
 # is num a rational expression (i.e. fraction or whole + fraction)
+# ok if there is only one number and it is a fraction
+# ok if there are two numbers consisting of integer + fraction
 def rational?(num)
+  # assume whole + fraction or fraction + nil, split and test for this
+  # garbage will capture any third element in input,
   first_num, second_num, garbage = num.split()
   if garbage
     false
-  elsif fraction?(first_num) && !second_num
-    true
-  elsif integer?(first_num) && (second_num && fraction?(second_num))
-    true
+  elsif !second_num
+    valid_fraction?(first_num)
+  elsif second_num
+    integer?(first_num) && valid_fraction?(second_num)
   else false
   end
 end
+
 # calculate monthly payment
 def monthly_payment(years, amount, rate)
   month_rate = (rate.to_f / 100) / 12
   loan_months = years.to_f * 12
-  puts
-  puts "rate is #{month_rate}"
-  puts "months are #{loan_months}"
-  puts "amount is #{amount.to_f}"
   p = amount.to_f
   j = month_rate.to_f
   n = loan_months.to_f
-  #amount.to_f * (month_rate / (1 - (1 + month_rate)**(-loan_months)))
+  # amount.to_f * (month_rate / (1 - (1 + month_rate)**(-loan_months)))
   m = p * (j / (1 - (1 + j)**(-n)))
-  #[p,j,n]
+  # [p,j,n]
 end
 =begin
-  
 m = p * (j / (1 - (1 + j)**(-n)))
 
     m = monthly payment
     p = loan amount
     j = monthly interest rate
     n = loan duration in months
-=end 
-  
- 
-loan_amount, loan_years, APR = '','',''
-loop do 
+=end
+
+loan_amount, loan_years, apr = '', '', ''
+loop do
   puts "enter loan amount: "
   loan_amount = gets.chomp
   break if valid_num?(loan_amount)
@@ -125,17 +138,17 @@ loop do
   puts "sorry. that is not a valid number for loan length"
 end
 
-loop do 
+loop do
   puts "enter APR: "
-  APR = gets.chomp
-  break if valid_num?(APR)
+  apr = gets.chomp
+  break if valid_num?(apr)
   puts "sorry. that is not a valid APR"
 end
-payment = monthly_payment(loan_years, loan_amount, APR)
+payment = monthly_payment(loan_years, loan_amount, apr)
 
 puts "you want a loan of $#{loan_amount}"
 puts "this is to be paid over #{loan_years} years"
-puts "your APR is #{APR}"
+puts "your APR is #{apr}"
 puts
 puts "given this information, your monthly payment is: "
 puts
