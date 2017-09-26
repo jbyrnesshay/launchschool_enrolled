@@ -55,9 +55,33 @@ SET monthly_payment = loan_amount * ( monthly_int_rate / (1 - (1 + monthly_int_r
 PRINT monthly_payment
 =end
 
+def prompt(message)
+  puts "=> #{message}"
+  print "=> "
+end
+def statement(message='')
+  puts "** #{message}"
+end
+def help(feature)
+    custom = case feature
+              when 'apr'
+                "APR in the following format"
+              end
+    display = <<-MSG
+      *-- You may enter numbers in the following formats:
+      *** Floats (positive value)
+      *** Positive integers
+      *** Integer + fraction (numerator < denominator)
+      *** Fraction only (numerator < denominator)
+      *** #{custom}
+    MSG
+    puts display 
+end
+ 
 # check if valid num, as either:
 # valid float, valid integer, or valid fractional expression
 # also greater than zero
+ 
 def valid_num?(num)
   (float?(num) || integer?(num) || rational?(num)) && num.to_i.positive?
 end
@@ -94,12 +118,14 @@ end
 # ok if there are two numbers consisting of integer + fraction
 def rational?(num)
   # assume whole + fraction or fraction + nil, split and test for this
-  # garbage will capture any third element in input,
+  # garbage will capture any third element in input, flagging input as invalid
   first_num, second_num, garbage = num.split()
   if garbage
     false
+  # if only one number, is it fraction?
   elsif !second_num
     valid_fraction?(first_num)
+  # if two numbers, are they integer + fraction?
   elsif second_num
     integer?(first_num) && valid_fraction?(second_num)
   else false
@@ -113,8 +139,9 @@ def monthly_payment(years, amount, rate)
   p = amount.to_f
   j = month_rate.to_f
   n = loan_months.to_f
-  # amount.to_f * (month_rate / (1 - (1 + month_rate)**(-loan_months)))
-  m = p * (j / (1 - (1 + j)**(-n)))
+  payment = amount.to_f * (month_rate / (1 - (1 + month_rate)**-loan_months))
+  payment.round(2)
+  # p * (j / (1 - (1 + j)**(-n)))
   # [p,j,n]
 end
 =begin
@@ -128,31 +155,45 @@ m = p * (j / (1 - (1 + j)**(-n)))
 
 loan_amount, loan_years, apr = '', '', ''
 loop do
-  puts "enter loan amount: "
-  loan_amount = gets.chomp
+  loop do
+    prompt "Enter loan amount: ['h' for help]"
+    loan_amount = gets.chomp
+    break if loan_amount != 'h'
+    help('loan_amount')
+    next
+  end
   break if valid_num?(loan_amount)
-  puts "sorry. that is not a valid number for loan amount"
+  puts "Sorry. that is not a valid loan amount"
 end
 
 loop do
-  puts "enter loan length in years"
-  loan_years = gets.chomp
+  loop do
+    prompt "Enter loan length in years: ['h' for help]"
+    loan_years = gets.chomp
+    break if loan_years != 'h'
+    help('loan_years')
+    next
+  end
   break if valid_num?(loan_years)
-  puts "sorry. that is not a valid number for loan length"
+  puts "Sorry. that is not a valid loan length"
 end
 
 loop do
-  puts "enter APR: "
-  apr = gets.chomp
+  loop do
+    prompt "Enter APR: ['h' for help]"
+    apr = gets.chomp
+    break if apr != 'h'
+    help('apr')
+    next
+  end
   break if valid_num?(apr)
-  puts "sorry. that is not a valid APR"
+  puts "Sorry. that is not a valid APR"
 end
 payment = monthly_payment(loan_years, loan_amount, apr)
-
-puts "you want a loan of $#{loan_amount}"
-puts "this is to be paid over #{loan_years} years"
-puts "your APR is #{apr}"
-puts
-puts "given this information, your monthly payment is: "
-puts
-puts "$#{payment}"
+statement
+statement "** You want a loan of $#{loan_amount}"
+statement "-- It will be paid over #{loan_years} years"
+statement "-- Your APR is #{apr} %"
+statement "-- Your monthly payment is: "
+statement "---------------------------"
+statement "-> $ #{payment} <-"
