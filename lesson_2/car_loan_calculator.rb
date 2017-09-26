@@ -57,8 +57,9 @@ PRINT monthly_payment
 
 # check if valid num, as either:
 # valid float, valid integer, or valid fractional expression
+# also greater than zero
 def valid_num?(num)
-  float?(num) || integer?(num) || rational?(num)
+  (float?(num) || integer?(num) || rational?(num)) && num.to_i.positive?
 end
 
 # is it a float?
@@ -73,9 +74,11 @@ end
 
 # for purpose of this program,
 # only accept fraction with denominator > numerator
-def denominator_greater(num)
-  test = num.scan(/\d+/)
-  test.last > test.first
+# don't accept value of '0' or leading '0' in either num or den
+def valid_fraction_parts?(num)
+  parts = num.scan(/\d+/)
+  leading_zero = parts.select {|x\value| value.chars.first == '0'}
+  test.last.to_i > test.first.to_i && leading_zero.empty?  
   # num.to_r < 1
 end
 
@@ -83,7 +86,7 @@ end
 def valid_fraction?(num)
   # num.to_r.to_s == num
   # check num, match cannot be called from nil class
-  num && num.match(%r(\d+\/\d+)) && denominator_greater(num)
+  num && num.match(%r(\d+\/\d+)) && valid_fraction_parts?(num)
 end
 
 # is num a rational expression (i.e. fraction or whole + fraction)
