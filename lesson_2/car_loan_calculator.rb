@@ -54,6 +54,9 @@ SET monthly_payment = loan_amount * ( monthly_int_rate / (1 - (1 + monthly_int_r
 
 PRINT monthly_payment
 =end
+error = ''
+require 'yaml'
+MESSAGES = YAML.load_file('loan.yml')
 
 def prompt(message)
   puts "=> #{message}"
@@ -65,15 +68,23 @@ end
 def help(feature)
     custom = case feature
               when 'apr'
-                "APR in the following format"
+                ["APR represents Annual Percentage Rate", "of interest for your requested loan"]
+              when 'loan_amount'
+                ["LOAN AMOUNT represents the amount of", "loan in dollars or dollars and cents"]
+              when 'loan_years'
+                ["LOAN LENGTH represents the length in years of", "loan repay: in whole,fractional, or combined values"]
               end
     display = <<-MSG
+      *** -----------------------------------------------
+      *** #{custom.first}                     
+      **  #{custom.last}                             
+      *** -----------------------------------------------
       *-- You may enter numbers in the following formats:
       *** Floats (positive value)
       *** Positive integers
       *** Integer + fraction (numerator < denominator)
       *** Fraction only (numerator < denominator)
-      *** #{custom}
+      *** -----------------------------------------------                                            
     MSG
     puts display 
 end
@@ -102,7 +113,7 @@ end
 def valid_fraction_parts?(num)
   parts = num.scan(/\d+/)
   leading_zero = parts.select { |value| value.chars.first == '0' }
-  test.last.to_i > test.first.to_i && leading_zero.empty?
+  parts.last.to_i > parts.first.to_i && leading_zero.empty?
   # num.to_r < 1
 end
 
@@ -154,6 +165,9 @@ m = p * (j / (1 - (1 + j)**(-n)))
 =end
 
 loan_amount, loan_years, apr = '', '', ''
+
+puts MESSAGES["welcome"]
+
 loop do
   loop do
     prompt "Enter loan amount: ['h' for help]"
@@ -163,7 +177,7 @@ loop do
     next
   end
   break if valid_num?(loan_amount)
-  puts "Sorry. that is not a valid loan amount"
+  puts "#{MESSAGES["error"]} loan amount"
 end
 
 loop do
@@ -175,7 +189,7 @@ loop do
     next
   end
   break if valid_num?(loan_years)
-  puts "Sorry. that is not a valid loan length"
+  puts "#{MESSAGES["error"]} loan length in years"
 end
 
 loop do
@@ -187,7 +201,7 @@ loop do
     next
   end
   break if valid_num?(apr)
-  puts "Sorry. that is not a valid APR"
+  puts "#{MESSAGES["error"]} APR"
 end
 payment = monthly_payment(loan_years, loan_amount, apr)
 statement
