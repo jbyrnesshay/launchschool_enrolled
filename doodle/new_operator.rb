@@ -2,6 +2,9 @@
 range = 4..10
 test = nil
 
-range.each {|x| test ||= x; puts x}
+range.each do |x|
+  test ||= x
+  puts x
+end
 
 puts test

@@ -20,22 +20,25 @@ def valid_number?(num)
   # num.to_i.to_s == num
   # num.match(/^\d+$/)
   num.match(/^\d+\.?\d*$/)
-   # /\d/.match(input) && /^\d*\.?\d*$/.match(input)
+  # /\d/.match(input) && /^\d*\.?\d*$/.match(input)
 end
+
 def integer?(num)
   num.to_i.to_s == num
 end
+
 def float?(num)
-  num.to_f.to_s == num 
+  num.to_f.to_s == num
 end
+
 def float_or_int?(num)
   integer?(num) || float?(num)
 end
+
 # check for floats or integers
 def number?(num)
   num.match(/^d+\.?\d*$/)
 end
-
 
 def operation_to_message(op)
   spell_op =  case op
@@ -114,13 +117,13 @@ loop do
 
   result =  case operator
             when '1'
-              ((number1.to_f + number2.to_f)*  100).round / 100.0
+              ((number1.to_f + number2.to_f) * 100).round / 100.0
             when '2'
               ((number1.to_f - number2.to_f) * 100).round / 100.0
             when '3'
-             ((number1.to_f * number2.to_f) * 100).round / 100.0
+              ((number1.to_f * number2.to_f) * 100).round / 100.0
             when '4'
-            ((number1.to_f / number2.to_f) * 100).round / 100.0
+              ((number1.to_f / number2.to_f) * 100).round / 100.0
             end
   if result.to_i == result.to_f
     result = result.to_i

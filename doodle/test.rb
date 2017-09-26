@@ -1,6 +1,6 @@
 
-NUMBERS = [1,2,3]
-arr = [1,2,3]
+NUMBERS = [1, 2, 3]
+arr = [1, 2, 3]
 
 def test
   puts NUMBERS.inspect

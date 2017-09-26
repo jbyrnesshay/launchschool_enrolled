@@ -1,5 +1,5 @@
 def repeat(string, number)
-  number.times do 
+  number.times do
     puts string
   end
 end
