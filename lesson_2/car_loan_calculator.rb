@@ -55,20 +55,24 @@ SET monthly_payment = loan_amount * ( monthly_int_rate / (1 - (1 + monthly_int_r
 PRINT monthly_payment
 =end
 
+#check if valid num, as either valid float, valid integer, or valid fractional expression
 def valid_num?(num)
   float?(num) || integer?(num) || rational?(num)
 end
+# is it a float?
 def float?(num)
   num.to_f.to_s == num
 end
+# is num an integer
 def integer?(num)
   num.to_i.to_s == num
 end
+# is num a numerator/denominator
 def fraction?(num)
   #num.to_r.to_s == num
-  
   num.match(/\d+\/\d+/)
 end
+# is num a rational expression (i.e. fraction or whole + fraction)
 def rational?(num)
   first_num, second_num, garbage = num.split()
   if garbage
@@ -80,6 +84,7 @@ def rational?(num)
   else false
   end
 end
+# calculate monthly payment
 def monthly_payment(years, amount, rate)
   month_rate = (rate.to_f / 100) / 12
   loan_months = years.to_f * 12
