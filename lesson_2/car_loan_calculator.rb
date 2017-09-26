@@ -77,8 +77,8 @@ end
 # don't accept value of '0' or leading '0' in either num or den
 def valid_fraction_parts?(num)
   parts = num.scan(/\d+/)
-  leading_zero = parts.select {|x\value| value.chars.first == '0'}
-  test.last.to_i > test.first.to_i && leading_zero.empty?  
+  leading_zero = parts.select { |value| value.chars.first == '0' }
+  test.last.to_i > test.first.to_i && leading_zero.empty?
   # num.to_r < 1
 end
 
