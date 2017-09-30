@@ -58,6 +58,8 @@ error = ''
 require 'yaml'
 MESSAGES = YAML.load_file('loan.yml')
 
+ 
+
 def prompt(message)
   puts "=> #{message}"
   print "=> "
@@ -133,7 +135,7 @@ def rational?(num)
   first_num, second_num, garbage = num.split()
   if garbage
     false
-  # if only one number, is it fraction?
+  # if only one number (i.e., no second num), is it fraction?
   elsif !second_num
     valid_fraction?(first_num)
   # if two numbers, are they integer + fraction?
@@ -179,7 +181,7 @@ loop do
   break if valid_num?(loan_amount)
   puts "#{MESSAGES["error"]} loan amount"
 end
-
+ 
 loop do
   loop do
     prompt "Enter loan length in years: ['h' for help]"
@@ -191,7 +193,7 @@ loop do
   break if valid_num?(loan_years)
   puts "#{MESSAGES["error"]} loan length in years"
 end
-
+ 
 loop do
   loop do
     prompt "Enter APR: ['h' for help]"
@@ -203,6 +205,7 @@ loop do
   break if valid_num?(apr)
   puts "#{MESSAGES["error"]} APR"
 end
+
 payment = monthly_payment(loan_years, loan_amount, apr)
 statement
 statement "** You want a loan of $#{loan_amount}"
