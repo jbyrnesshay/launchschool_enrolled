@@ -19,11 +19,14 @@ def statement(*items)
     #puts item
     #test if item is a string or not (for this purpose, a variable)
     #puts 'multiplying'.eql?('multiplying'.to_s) && message('multiplying')
-     
-    if item.eql?(item.to_s) && message(item)
+    # this doesn't need to be this
+
+    #if item.eql?(item.to_s) && message(item)
+    if item.kind_of?(String) && message(item)
       item = message(item)
       #puts item
-    elsif !item.eql?(item.to_s)
+     # elsif !item.eql?(item.to_s
+    elsif item.kind_of?(Symbol)
       item = PROFILE[item]
      
     end
@@ -93,8 +96,14 @@ loop do
   statement "welcome"
   name = gets.chomp
   if name.empty?
-    statement 'invalid', 'user_name'
+    statement 'in
+    #if item.eql?(item.to_s) && message(item)valid', 'user_name'
   else
+    #i add this to a hash because I strived for a simpler more elegant way of preparing multiple values for a prompt statement
+    #which could include a string literal which needs to be tested if it matches yml or  a variable which will not be, 
+    #I decided that passing a symbol rather than the value of a variable (which would be a string)
+    # would allow me to differentiate within the method whether I needed to call the YML contents on the string or not
+    # it it avoids the special case where someone might enter a name which is a YML message value
     PROFILE[:name] = name
     break
   end
