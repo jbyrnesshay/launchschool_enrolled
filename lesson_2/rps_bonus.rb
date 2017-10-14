@@ -26,7 +26,7 @@ wins = { User: 0, Computer: 0 }
 # welcome display keeps display of score (# of wins) between matches,
 # display is colorized using methods in colors.rb
 def welcome(wins)
-  <<MSG
+  <<-MSG
 
 *****  #{colorize('Welcome to Rock, Paper, Scissors, Spock, Lizard!', 'white', 'bg-blue')} *****
 *****  #{colorize('Current Score:', 'white')}  #{colorize('YOU', 'white', 'bg-magenta', 1)}  vs  #{colorize('COMPUTER', 'white', 'bg-magenta', 1)}  *******************

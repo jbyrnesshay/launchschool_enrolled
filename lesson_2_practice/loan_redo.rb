@@ -40,12 +40,14 @@ def prompt(message)
   puts "=> #{message}"
 end
 
-def clear_screen
+ 
+def clear_terminal
   system('cls')
   system('clear')
 end
 
 loop do
+  clear_terminal
   prompt "Welcome to Loan Calculator"
 
   loop do
