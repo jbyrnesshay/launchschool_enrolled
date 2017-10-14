@@ -76,7 +76,10 @@ end
 # check if user 1 or 2 keystroke matches valid chars for valid selections
 def validate_user_selection(input)
   VALID_CHOICES.each do |option, value|
-    return option.to_s if input.index(value.to_s) == 0
+    # test allows strings longer than valid keystrokes
+    # requires start of input string is valid keystroke/strokes
+    # strips blank spaces in case user hits leading or trailing spaces
+    return option.to_s if input.downcase.strip.index(value.to_s) == 0
   end
   false
 end
