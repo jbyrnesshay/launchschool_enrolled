@@ -23,7 +23,7 @@ user_choice = ''
 # keep track of user vs computer wins
 wins = { User: 0, Computer: 0 }
 
-# a welcome display, also keeps display of score *# of wins) between matches,
+# a welcome display, also keeps display of score (# of wins) between matches,
 # display is colorized using methods in colors.rb
 def welcome(wins)
   <<MSG
