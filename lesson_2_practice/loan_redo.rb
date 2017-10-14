@@ -1,5 +1,5 @@
-=begin
 
+=begin
     the loan amount
     the Annual Percentage Rate (APR)
     the loan duration
@@ -9,12 +9,10 @@ From the above, you'll need to calculate the following two things:
     monthly interest rate
     loan duration in months
 m = p * (j / (1 - (1 + j)**(-n)))
-
     m = monthly payment
     p = loan amount
     j = monthly interest rate
     n = loan duration in months
-
 =end
 loan_amount = ''
 a_p_r = ''
@@ -40,6 +38,11 @@ end
 
 def prompt(message)
   puts "=> #{message}"
+end
+
+def clear_screen
+  system('cls')
+  system('clear')
 end
 
 loop do
