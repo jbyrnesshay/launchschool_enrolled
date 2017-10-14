@@ -64,7 +64,7 @@ def result_message(player, computer)
   end
 end
 
-# create text display of choices to reflect keypress option for choice
+# constructs text display of choices to reflect keypress option for choice
 # choices appear in display as '..., [p]aper, [sc]issors, [sp]ock, ...'
 def display_choices
   display = []
