@@ -1,0 +1,47 @@
+
+  en:
+    welcome: Welcome to calculator!  Enter your name
+    greeting: Hi
+    invalid: sorry that is not a valid 
+    user_name: name
+    number: number
+    first_number: what is the first number?
+    second_number: what is the second number?
+    operator_invalid: must choose from 1, 2, 3, 4
+    operator_choice:  What operation would you like to perform?
+    add: add
+    subtract: subtract
+    multiply: multiply
+    divide: divide
+    adding: adding
+    subtracting: subtracting
+    multiplying: multiplying
+    dividing: dividing
+    operation_statement: the two numbers
+    result: The result is
+    again?: do you wish to calculate again? (y / n)
+    thanks: thank you for calculating
+
+    
+  sp:
+    welcome: Bienvenido a la calculadora! Introduzca su nombre
+    greeting: Hola
+    invalid: perdón que no es válido
+    user_name: nombre
+    number: número
+    first_number: cual es el primer numero
+    second_number: cual es el segundo numero
+    operator_invalid: debe elegir entre 1, 2, 3, 4
+    operator_choice: ¿Qué operación le gustaría realizar?
+    add: sumar
+    subtract: sustraer
+    multiply: multiplicar
+    divide: dividir
+    adding: añadiendo
+    subtracting: restando
+    multiplying: multiplicando
+    dividing: divisor
+    operation_statement: los dos números
+    result: El resultado es
+    again?: ¿Desea calcular de nuevo? (y / n)
+    thanks: gracias por calcular
