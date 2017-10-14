@@ -33,6 +33,7 @@ def bg_color(color)
   BG_COLORS[color.to_sym]
 end
 
+# bold = 1 will embolden, bold = 0 results in normal weight
 def colorize(string, color = 'default', bkgrnd = 'default', bold = 0)
   text = txt_color(color)
   background = bg_color(bkgrnd)
