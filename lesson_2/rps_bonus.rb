@@ -10,7 +10,7 @@ WIN_TERMS = {
   spock: ['scissors', 'rock'],
   lizard: ['spock', 'paper']
 }
-# value for key is used in display to indicate valid keypresses
+# value for key is used in display and validate to indicate valid keypresses
 VALID_CHOICES = {
   rock: 'r',
   paper: 'p',
@@ -78,7 +78,7 @@ def validate_user_selection(input)
   VALID_CHOICES.each do |option, value|
     # test allows strings longer than valid keystrokes
     # requires start of input string is valid keystroke/strokes
-    # strips blank spaces in case user hits leading or trailing spaces
+    # strips leading or trailing spaces
     return option.to_s if input.downcase.strip.index(value.to_s) == 0
   end
   false
@@ -93,7 +93,7 @@ def prompt(message)
   puts("=> #{message}")
 end
 
-# uses colorize function in colors.rb to color winning banner
+# uses colorize function in colors.rb to color winning celebration banner
 def print_banner(winner)
   colors = ['bg-magenta', 'bg-cyan', 'bg-red', 'bg-blue', 'bg-red', 'bg-gray']
   headline = "********* GRAND WINNER!  #{winner} won 5 matches! *********"
