@@ -22,3 +22,14 @@ question 4
 buffer is re-assigned to different location in memory '='
 rolling_buffer2 never adds to the buffer itself, but only to the method's local buffer
 rolling_buffer1 effectively alters the input argument, buffer2 does not
+
+question 7
+34
+
+question 8
+yes because []= is a method which mutates the caller
+
+question 9 
+"paper"
+question 10 
+"no"
