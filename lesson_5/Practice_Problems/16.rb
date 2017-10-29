@@ -22,7 +22,7 @@ def create_hex
   nums = '0123456789abcdef'
   32.times do 
      #rand = nums.chars.sample
-     hex << rand(0..16).to_s(16)
+     hex << rand(0..15).to_s(16)
      #hex << rand
   end
   #puts hex.size 
@@ -45,5 +45,20 @@ def uuid
  parse_hex(hex)
 end
 
-puts uuid
+#puts uuid
 
+
+def new_uuid
+  full_uuid = ''
+  lengths = [8,4,4,4,12]
+  lengths.each_with_index do |slice_length, index1|
+    conjunctor = (index1 < (lengths.size - 1)) ? '-' : ''
+    slice_length.times do |x|
+      full_uuid << rand(0..15).to_s(16)
+    end
+    full_uuid << conjunctor
+  end
+ full_uuid
+end
+
+puts new_uuid
