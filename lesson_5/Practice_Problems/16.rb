@@ -47,18 +47,17 @@ end
 
 #puts uuid
 
-
 def new_uuid
   full_uuid = ''
-  lengths = [8,4,4,4,12]
-  lengths.each_with_index do |slice_length, index1|
-    conjunctor = (index1 < (lengths.size - 1)) ? '-' : ''
-    slice_length.times do |x|
+  sections = [8, 4, 4, 4, 12]
+  sections.each_with_index do |section_length, index1|
+    conjunctor = index1 < (sections.size - 1) ? '-' : ''
+    section_length.times do
       full_uuid << rand(0..15).to_s(16)
     end
     full_uuid << conjunctor
   end
- full_uuid
+  full_uuid
 end
 
 puts new_uuid
