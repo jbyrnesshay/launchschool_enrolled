@@ -6,7 +6,8 @@ WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
-
+FIRST_MOVE_ORDER = {'player'=>['player', 'computer'], 'computer'=>['computer', 'player']}
+FIRST_PLAYER = 'choose'
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -141,41 +142,72 @@ end
 def computer_places_piece!(brd)
   square = ''
   WINNING_LINES.each do |line|
-    square = find_at_risk_square(line, brd)
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+    break if square
+    square = find_at_risk_square(line, brd, PLAYER_MARKER)
     break if square
   end
   if !square
-    square = empty_squares(brd).sample
+    if brd[5] == INITIAL_MARKER
+      square = 5
+    else square = empty_squares(brd).sample
+    end
   end
   brd[square] = COMPUTER_MARKER
 end
  
 
-def find_at_risk_square(line, board)
-  if board.values_at(*line).count(PLAYER_MARKER) == 2
+def find_at_risk_square(line, board, marker)
+  #if board.values_at(*line).count(COMPUTER_MARKER) == 2
+   # b= board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
     #binding.pry
-    board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
+    #b
+  if board.values_at(*line).count(marker) == 2
     #binding.pry
+    z= board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
+    #binding.pry
+   #@ z
   else
     nil
   end
 end
  
- 
+def move(current_player, brd)
+ # binding.pry
+  if current_player == 'player'
+    player_places_piece!(brd) 
+  elsif current_player == 'computer'
+    computer_places_piece!(brd)
+  end
+end
 
 loop do
   initialize_wins(win_counts)
   loop do 
   board = initialize_board
+  first_play = if FIRST_PLAYER == 'choose'
+                      prompt 'choose "player" or "computer"'
+                      choice = gets.chomp
+                      FIRST_MOVE_ORDER[choice]
+                    else FIRST_MOVE_ORDER[FIRST_PLAYER]
+                    end
+      p first_play
     loop do
       display_board(board, win_counts)
-      player_places_piece!(board)
+      
+      first_play.each do |agent|
+        #binding.pry
+      # player_places_piece!(board)
+        move(agent, board)
+        display_board(board, win_counts)
+        
+      end
       break if someone_won?(board) || board_full?(board)
-      computer_places_piece!(board)
+      #computer_places_piece!(board)
       #sleep(1)
-      break if someone_won?(board) || board_full?(board)
+     # break if someone_won?(board) || board_full?(board)
      end
-    display_board(board, win_counts)
+    #display_board(board, win_counts)
      sleep(1)
     # puts board.inspect
     if someone_won?(board)
