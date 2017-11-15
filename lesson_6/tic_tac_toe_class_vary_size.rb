@@ -13,6 +13,8 @@ def prompt(msg)
   puts "=> #{msg}"
 end
 # BOARD_SIZE_OPTIONS = [3,5]
+
+# initialize board to be custom size
 def initialize_board(size)
   new_board = {}
   squared_size = size * size
@@ -20,7 +22,9 @@ def initialize_board(size)
   new_board
 end
 
-BOARD_SIZE = 7
+BOARD_SIZE = 9
+
+# auxilliary to create some divider lines for structure of board
 def create_board_line(size, value = "blank")
   value == "blank" ? cell = "     " : cell = "-----"
   value == "blank" ? divider = "|" : divider = "+"
@@ -64,26 +68,26 @@ def find_winning_lines(size)
     storage = []
     size.times do |factor|
       if corner_index == 0
-        size_vector = size
-      else size_vector  = size * (-1)
+        size_vectorized = size
+      else size_vectorized  = size * (-1)
       end
-      storage.push(all_values.at(corner_index +(size_vector*factor) + factor))
+      storage.push(all_values.at(corner_index +(size_vectorized*factor) + factor))
     end
     diagonal << storage
   end
+
   across + down + diagonal
 end
  
 p find_winning_lines(BOARD_SIZE)
 
-
+# create complete board display structure, custom size
 def board_structure(size, brd)
   structure_cells = []
   size_squared = size * size
   basic_structure = ''
   divider = "|"
   (1..size_squared).each do |x| 
-      
       basic_structure << "  #{brd[x]}  "
       if x % size == 0
         ending = "\n"
@@ -93,8 +97,6 @@ def board_structure(size, brd)
       basic_structure << ending
       basic_structure 
   end
-  #thing = structure
-  #puts thing.each_line.count
   complete_structure = ''
   basic_structure.each_line.with_index do |line, x|
       complete_structure << create_board_line(size)
@@ -106,17 +108,37 @@ def board_structure(size, brd)
   end
   complete_structure 
 end
+
 board = initialize_board(BOARD_SIZE)
-puts board_structure(BOARD_SIZE, board)
-exit
+board = board_structure(BOARD_SIZE, board)
+
+
+
+NUM_COMP_PLAYERS = 4
+player_hash = {}
+def create_player_values(num, hash)
+  num.times do |x|
+    player_name = "computer" 
+    hash[player_name] = 'O'
+    if x > 0
+        player_name << (x + 1).to_s
+        hash[player_name] = ('P'..'Z').to_a.sample 
+    end
+  end
+  hash
+end 
+
+players = create_player_values(NUM_COMP_PLAYERS, player_hash)
 
 
 # rubocop:disable Metrics/AbcSize
-def display_board(brd, wins)
+=begin
+def display_board(brd, wins, players)
   system "cls"
   system "clear"
-  puts "You're a #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}"
-  puts "You have #{wins["player"]} wins.  Computer has #{wins["computer"]} wins.  There are #{wins["ties"]} ties"
+  player_indentification_message = players.each {|player, value| "#{player} is #{value}.  " }
+  puts "You're a #{PLAYER_MARKER}. #{player_indentification_message}"
+  puts "You have #{wins["player"]} wins.  Computer has #{wins["computer"]} wins. "
   puts ""
   puts "     |     |"
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}"
@@ -131,8 +153,42 @@ def display_board(brd, wins)
   puts "     |     |"
   puts ""
 end
-# rubocop:enable Metrics/AbcSize
+=end
+def display_board(brd, wins, players)
+  system "cls"
+  system "clear"
+  player_indentification_message = ''
+  players.map {|key, value| player_indentification_message << "#{key} is #{value}.  " }
+  puts "You're a #{PLAYER_MARKER}. #{player_indentification_message}"
+  wins_message = ''
+  wins.map {|player, value| wins_message  << "#{player} has #{wins[player]} wins.  " }
+  puts "You have #{wins["player"]} wins.  #{wins_message}"
+  puts ""
+  puts brd
+  puts ""
+end
 
+
+def initialize_wins(win_counts)
+  win_counts.each {|agent, _| win_counts[agent] = 0}
+end
+
+win_counts = {"player"=> 0, "ties"=> 0}
+def merge_player_wins(players, hash)
+  keys = players.keys
+  keys.each do |key|
+    hash[key] = 0
+  end
+end
+
+merge_player_wins(players, win_counts)
+
+p win_counts
+p players
+display_board(board, win_counts, players)
+exit
+# rubocop:enable Metrics/AbcSize
+=begin
 def initialize_board
   new_board = {}
   (1..9).each { |num| new_board[num] = INITIAL_MARKER }
@@ -143,7 +199,7 @@ def empty_squares(brd)
   # binding.pry
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
-
+=end
 =begin
 def joinor(array:, delimit: ',', junction: 'or')
   string = ''
@@ -229,11 +285,6 @@ def detect_winner(brd)
     nil
 end
 
-def initialize_wins(win_counts)
-  win_counts.each {|agent, _| win_counts[agent] = 0}
-end
-
-win_counts = {"player"=> 0, "computer"=> 0, "ties"=> 0}
 
 def increment_wins(counts, winner)
  counts[winner] += 1
