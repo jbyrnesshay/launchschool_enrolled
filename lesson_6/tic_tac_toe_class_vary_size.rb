@@ -8,12 +8,14 @@ PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 #FIRST_MOVE_ORDER = {'player'=>['player', 'computer'], 'computer'=>['computer', 'player']}
 FIRST_PLAYER = 'choose'
+BOARD_SIZE = 5
+NUM_COMP_PLAYERS = 4
+
 
 def prompt(msg)
   puts "=> #{msg}"
 end
 # BOARD_SIZE_OPTIONS = [3,5]
-
 # initialize board to be custom size
 def initialize_board(size)
   new_board = {}
@@ -26,8 +28,6 @@ def empty_squares(brd)
   # binding.pry
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
-
-BOARD_SIZE = 5
 
 # auxilliary to create some divider lines for structure of board
 def create_board_line(size, value = "blank")
@@ -118,10 +118,9 @@ end
 
 
 
-
-NUM_COMP_PLAYERS = 4
 player_hash = {}
 def create_player_values(num, hash)
+  hash['player'] = 'X'
   num.times do |x|
     player_name = "computer" 
     hash[player_name] = 'O'
@@ -133,7 +132,7 @@ def create_player_values(num, hash)
   hash
 end 
 
-players = create_player_values(NUM_COMP_PLAYERS, player_hash)
+
 
  
 def display_board(display_it, wins, players)
@@ -155,7 +154,7 @@ def initialize_wins(win_counts)
   win_counts.each {|agent, _| win_counts[agent] = 0}
 end
 
-win_counts = {"player"=> 0, "ties"=> 0}
+
 def merge_player_wins(players, hash)
   keys = players.keys
   keys.each do |key|
@@ -163,10 +162,6 @@ def merge_player_wins(players, hash)
   end
 end
 
-merge_player_wins(players, win_counts)
-
-p win_counts
-p players
  
 def joinor(array:, delimit: ', ', junction: 'or')
   size = array.size
@@ -201,54 +196,22 @@ def someone_won?(brd)
   !!detect_winner(brd)
 end
  
-
-
 def detect_winner(brd)
     WINNING_LINES.each do |line|
-      if brd.values_at(*line).count(PLAYER_MARKER) == 3
+      if brd.values_at(*line).count(PLAYER_MARKER) == BOARD_SIZE
         return "player"
-      elsif brd.values_at(*line).count(COMPUTER_MARKER) == 3
+      elsif brd.values_at(*line).count(COMPUTER_MARKER) == BOARD_SIZE
         return "computer"
       end
     end
     nil
 end
 
-
 def increment_wins(counts, winner)
  counts[winner] += 1
 end
 
-def select_computer(brd, players)
-  computers = players.keys
-end
 
-def computer_places_piece!(brd, player)
-  computers = players.keys
-  square = ''
-  computers.each do |player|
-    if player != 'player'
-       
-      WINNING_LINES.each do |line|
-        square = find_at_risk_square(line, brd, COMPUTER_MARKER)
-        break if square
-        square = find_at_risk_square(line, brd, PLAYER_MARKER)
-        break if square
-      end
-    end
-    #binding.pry
-  end
-  if !square
-    count_lines = BOARD_SIZE
-    if count_lines.odd?
-      x = (count_lines / 2 + 1) * BOARD_SIZE - (BOARD_SIZE/2)
-      #INITIAL_MARKER
-      square = x
-    else square = empty_squares(brd).sample
-    end
-  end
-  brd[square] = COMPUTER_MARKER
-end
  
 
 def find_at_risk_square(line, board, marker)
@@ -272,25 +235,67 @@ def place_piece!(brd, current_player, players)
   if current_player == 'player'
     player_places_piece!(brd) 
   else
-    computer_places_piece!(brd, players)
+    player = select_computer(current_player, players)
+    computer_places_piece!(brd, player, players)
   end
 end
 
 def next_player(current_player, players)
-  player_names = players.keys.sort
+  
   if current_player == 'player' 
     current_player = 'computer'
   else #'bill', 'ahh', 'aaaf'
-    player_names.each do |named|
-      if named == current_player
-        next 
-      else current_player = named
-      end
-      #break
-    end
+    current_player = select_computer(current_player, players)
   end
   current_player
 end
+
+def select_computer(current_player, players)
+  computers = players.keys.sort
+  binding.pry
+  computers.each do |named|
+      if named == current_player
+        next 
+      end
+      current_player = named
+      #binding.pry
+      break
+    end
+  current_player
+ # binding.pry
+end
+
+def computer_places_piece!(brd, player, players)
+  #computers = players.keys
+  square = ''
+      WINNING_LINES.each do |line|
+        square = find_at_risk_square(line, brd, players[player])
+        break if square
+        square = find_at_risk_square(line, brd, players['player'])
+        break if square
+      end
+  
+    #binding.pry
+  if !square
+    count_lines = BOARD_SIZE
+    if count_lines.odd?
+      x = (count_lines / 2 + 1) * BOARD_SIZE - (BOARD_SIZE/2)
+      #INITIAL_MARKER
+      square = x
+    else square = empty_squares(brd).sample
+    end
+  end
+  brd[square] = players[player]
+end
+
+
+players = create_player_values(NUM_COMP_PLAYERS, player_hash)
+win_counts = {"player"=> 0, "ties"=> 0}
+merge_player_wins(players, win_counts)
+ 
+
+p win_counts
+p players
 
 loop do
   system "cls"
@@ -311,10 +316,10 @@ loop do
       break if completed_round?(board)
  
       place_piece!(board, player, players)
-      binding.pry
+      #binding.pry
       player = next_player(player, players)
-        
-      end
+      binding.pry
+    end
   
     if someone_won?(board)
       winner = detect_winner(board)
