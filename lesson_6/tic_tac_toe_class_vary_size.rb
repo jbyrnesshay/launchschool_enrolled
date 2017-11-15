@@ -18,11 +18,16 @@ end
 def initialize_board(size)
   new_board = {}
   squared_size = size * size
-  (1..squared_size).each {|num| new_board[num] = 'x' }#INITIAL_MARKER}
+  (1..squared_size).each {|num| new_board[num] = INITIAL_MARKER }#INITIAL_MARKER}
   new_board
 end
 
-BOARD_SIZE = 9
+def empty_squares(brd)
+  # binding.pry
+  brd.keys.select { |num| brd[num] == INITIAL_MARKER }
+end
+
+BOARD_SIZE = 5
 
 # auxilliary to create some divider lines for structure of board
 def create_board_line(size, value = "blank")
@@ -109,8 +114,8 @@ def board_structure(size, brd)
   complete_structure 
 end
 
-board = initialize_board(BOARD_SIZE)
-board = board_structure(BOARD_SIZE, board)
+#board = initialize_board(BOARD_SIZE)
+
 
 
 
@@ -130,31 +135,8 @@ end
 
 players = create_player_values(NUM_COMP_PLAYERS, player_hash)
 
-
-# rubocop:disable Metrics/AbcSize
-=begin
-def display_board(brd, wins, players)
-  system "cls"
-  system "clear"
-  player_indentification_message = players.each {|player, value| "#{player} is #{value}.  " }
-  puts "You're a #{PLAYER_MARKER}. #{player_indentification_message}"
-  puts "You have #{wins["player"]} wins.  Computer has #{wins["computer"]} wins. "
-  puts ""
-  puts "     |     |"
-  puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}"
-  puts "     |     |"
-  puts "-----+-----+-----"
-  puts "     |     |"
-  puts "  #{brd[4]}  |  #{brd[5]}  |  #{brd[6]}"
-  puts "     |     |"
-  puts "-----+-----+-----"
-  puts "     |     |"
-  puts "  #{brd[7]}  |  #{brd[8]}  |  #{brd[9]}"
-  puts "     |     |"
-  puts ""
-end
-=end
-def display_board(brd, wins, players)
+ 
+def display_board(display_it, wins, players)
   system "cls"
   system "clear"
   player_indentification_message = ''
@@ -164,7 +146,7 @@ def display_board(brd, wins, players)
   wins.map {|player, value| wins_message  << "#{player} has #{wins[player]} wins.  " }
   puts "You have #{wins["player"]} wins.  #{wins_message}"
   puts ""
-  puts brd
+  puts display_it
   puts ""
 end
 
@@ -185,38 +167,7 @@ merge_player_wins(players, win_counts)
 
 p win_counts
 p players
-display_board(board, win_counts, players)
-exit
-# rubocop:enable Metrics/AbcSize
-=begin
-def initialize_board
-  new_board = {}
-  (1..9).each { |num| new_board[num] = INITIAL_MARKER }
-  new_board
-end
-
-def empty_squares(brd)
-  # binding.pry
-  brd.keys.select { |num| brd[num] == INITIAL_MARKER }
-end
-=end
-=begin
-def joinor(array:, delimit: ',', junction: 'or')
-  string = ''
-  size = array.size
-  array.each_with_index do |value, i|
-    item = if i == (size - 2)
-             "#{value}#{delimit} #{junction} "
-           elsif i == size -1
-             "#{value}"
-           else
-             "#{value}#{delimit} "
-           end
-    string << item
-  end
-  string
-end
-=end
+ 
 def joinor(array:, delimit: ', ', junction: 'or')
   size = array.size
   case size
@@ -249,18 +200,7 @@ end
 def someone_won?(brd)
   !!detect_winner(brd)
 end
-=begin
-def detect_winner(brd)
-  WINNING_LINES.any? do |line|
-    if line.all? { |square| brd[square] == PLAYER_MARKER }
-      return "player"
-    elsif line.all? { |square| brd[square] == COMPUTER_MARKER }
-      return "computer"
-    end
-  end
-  nil
-end
-=end
+ 
 
 
 def detect_winner(brd)
@@ -270,17 +210,6 @@ def detect_winner(brd)
       elsif brd.values_at(*line).count(COMPUTER_MARKER) == 3
         return "computer"
       end
-=begin
-      if brd[line[0]] == PLAYER_MARKER &&
-        brd[line[1]] == PLAYER_MARKER &&
-        brd[line[2]] == PLAYER_MARKER
-        return "player"
-      elsif brd[line[0]] == COMPUTER_MARKER &&
-        brd[line[1]] == COMPUTER_MARKER &&
-        brd[line[2]] == COMPUTER_MARKER
-        return "computer"
-      end
-=end
     end
     nil
 end
@@ -290,17 +219,31 @@ def increment_wins(counts, winner)
  counts[winner] += 1
 end
 
-def computer_places_piece!(brd)
+def select_computer(brd, players)
+  computers = players.keys
+end
+
+def computer_places_piece!(brd, player)
+  computers = players.keys
   square = ''
-  WINNING_LINES.each do |line|
-    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
-    break if square
-    square = find_at_risk_square(line, brd, PLAYER_MARKER)
-    break if square
+  computers.each do |player|
+    if player != 'player'
+       
+      WINNING_LINES.each do |line|
+        square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+        break if square
+        square = find_at_risk_square(line, brd, PLAYER_MARKER)
+        break if square
+      end
+    end
+    #binding.pry
   end
   if !square
-    if brd[5] == INITIAL_MARKER
-      square = 5
+    count_lines = BOARD_SIZE
+    if count_lines.odd?
+      x = (count_lines / 2 + 1) * BOARD_SIZE - (BOARD_SIZE/2)
+      #INITIAL_MARKER
+      square = x
     else square = empty_squares(brd).sample
     end
   end
@@ -309,15 +252,11 @@ end
  
 
 def find_at_risk_square(line, board, marker)
-  #if board.values_at(*line).count(COMPUTER_MARKER) == 2
-   # b= board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
-    #binding.pry
-    #b
+ 
   if board.values_at(*line).count(marker) == 2
     #binding.pry
     z= board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
-    #binding.pry
-   #@ z
+  
   else
     nil
   end
@@ -329,16 +268,28 @@ def completed_round?(board)
   someone_won?(board) || board_full?(board)
 end
 
-def place_piece!(brd, current_player)
+def place_piece!(brd, current_player, players)
   if current_player == 'player'
     player_places_piece!(brd) 
-  elsif current_player == 'computer'
-    computer_places_piece!(brd)
+  else
+    computer_places_piece!(brd, players)
   end
 end
 
-def alternate_player(current_player)
-  current_player == 'player' ? 'computer' : 'player'
+def next_player(current_player, players)
+  player_names = players.keys.sort
+  if current_player == 'player' 
+    current_player = 'computer'
+  else #'bill', 'ahh', 'aaaf'
+    player_names.each do |named|
+      if named == current_player
+        next 
+      else current_player = named
+      end
+      #break
+    end
+  end
+  current_player
 end
 
 loop do
@@ -351,31 +302,20 @@ loop do
                     else player = FIRST_PLAYER
                     end
   loop do 
-      board = initialize_board
-  
+      board = initialize_board(BOARD_SIZE)
+      display_the_board = board_structure(BOARD_SIZE, board)
       #p first_play
     loop do
-      display_board(board, win_counts)
+       display_the_board = board_structure(BOARD_SIZE, board)
+      display_board(display_the_board, win_counts, players)
       break if completed_round?(board)
-      #first_play.each do |agent|
-        #binding.pry
-      # player_places_piece!(board)
-       # unless completed_round?(board)
-        #  move(agent, board)
-         # display_board(board, win_counts)
-      #  end
-        place_piece!(board, player)
-        player = alternate_player(player)
+ 
+      place_piece!(board, player, players)
+      binding.pry
+      player = next_player(player, players)
         
       end
-      #break if completed_round?(board)
-      #computer_places_piece!(board)
-      #sleep(1)
-     # break if someone_won?(board) || board_full?(board)
-     #end
-    #display_board(board, win_counts)
-     #sleep(1)
-    # puts board.inspect
+  
     if someone_won?(board)
       winner = detect_winner(board)
       #binding.pry
