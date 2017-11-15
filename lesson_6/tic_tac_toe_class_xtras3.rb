@@ -6,8 +6,9 @@ WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
-FIRST_MOVE_ORDER = {'player'=>['player', 'computer'], 'computer'=>['computer', 'player']}
+#FIRST_MOVE_ORDER = {'player'=>['player', 'computer'], 'computer'=>['computer', 'player']}
 FIRST_PLAYER = 'choose'
+
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -17,7 +18,7 @@ def display_board(brd, wins)
   system "cls"
   system "clear"
   puts "You're a #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}"
-  puts "You have #{wins["player"]} wins.  Computer has #{wins["computer"]} wins"
+  puts "You have #{wins["player"]} wins.  Computer has #{wins["computer"]} wins.  There are #{wins["ties"]} ties"
   puts ""
   puts "     |     |"
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}"
@@ -133,7 +134,7 @@ def initialize_wins(win_counts)
   win_counts.each {|agent, _| win_counts[agent] = 0}
 end
 
-win_counts = {"player"=> 0, "computer"=> 0}
+win_counts = {"player"=> 0, "computer"=> 0, "ties"=> 0}
 
 def increment_wins(counts, winner)
  counts[winner] += 1
@@ -185,20 +186,23 @@ def place_piece!(brd, current_player)
     computer_places_piece!(brd)
   end
 end
+
 def alternate_player(current_player)
   current_player == 'player' ? 'computer' : 'player'
 end
+
 loop do
+  system "cls"
   initialize_wins(win_counts)
-  loop do 
-  board = initialize_board
   first_play = if FIRST_PLAYER == 'choose'
-                      prompt 'choose "player" or "computer"'
+                      prompt 'who goes first? "player" or "computer"'
                       choice = gets.chomp
-                      FIRST_MOVE_ORDER[choice]
                       player = choice
-                    else player = FIRST_MOVE_ORDER[FIRST_PLAYER][0]
+                    else player = FIRST_PLAYER
                     end
+  loop do 
+      board = initialize_board
+  
       #p first_play
     loop do
       display_board(board, win_counts)
@@ -220,7 +224,7 @@ loop do
      # break if someone_won?(board) || board_full?(board)
      #end
     #display_board(board, win_counts)
-     sleep(1)
+     #sleep(1)
     # puts board.inspect
     if someone_won?(board)
       winner = detect_winner(board)
@@ -228,10 +232,13 @@ loop do
       count = increment_wins(win_counts, winner)
       prompt "#{detect_winner(board)} won!"
       prompt "#{winner} has #{count} wins"
-      sleep(2)
+      
     else
       prompt "It's a tie!"
+      #binding.pry
+      win_counts["ties"] += 1
     end
+    sleep(2)
     break if count == 5
   end
   prompt "play again? y/n"

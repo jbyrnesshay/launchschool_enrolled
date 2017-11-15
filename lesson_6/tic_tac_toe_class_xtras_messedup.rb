@@ -1,13 +1,19 @@
- require 'pry'
+require 'pry'
 
 # rubocop:disable Metrics/LineLength
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
 # rubocop:enable Metrics/LineLengths
+
+# remaining constants
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 FIRST_MOVE_ORDER = {'player'=>['player', 'computer'], 'computer'=>['computer', 'player']}
-FIRST_PLAYER = 'choose'
+FIRST_PLAYER = 'player'
+
+
+# moethods
+
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -61,6 +67,7 @@ def joinor(array:, delimit: ',', junction: 'or')
   string
 end
 =end
+
 def joinor(array:, delimit: ', ', junction: 'or')
   size = array.size
   case size
@@ -93,6 +100,7 @@ end
 def someone_won?(brd)
   !!detect_winner(brd)
 end
+
 =begin
 def detect_winner(brd)
   WINNING_LINES.any? do |line|
@@ -105,7 +113,6 @@ def detect_winner(brd)
   nil
 end
 =end
-
 
 def detect_winner(brd)
     WINNING_LINES.each do |line|
@@ -143,10 +150,12 @@ def computer_places_piece!(brd)
   square = ''
   WINNING_LINES.each do |line|
     square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+     
     break if square
     square = find_at_risk_square(line, brd, PLAYER_MARKER)
     break if square
   end
+  #binding.pry
   if !square
     if brd[5] == INITIAL_MARKER
       square = 5
@@ -161,10 +170,9 @@ def find_at_risk_square(line, board, marker)
   #if board.values_at(*line).count(COMPUTER_MARKER) == 2
    # b= board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
     #binding.pry
-    #b
   if board.values_at(*line).count(marker) == 2
     #binding.pry
-    z= board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
+    board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
     #binding.pry
    #@ z
   else
@@ -172,71 +180,70 @@ def find_at_risk_square(line, board, marker)
   end
 end
  
- 
-
-def completed_round?(board)
-  someone_won?(board) || board_full?(board)
-end
-
-def place_piece!(brd, current_player)
+def move(current_player, brd)
+ # binding.pry
   if current_player == 'player'
     player_places_piece!(brd) 
   elsif current_player == 'computer'
     computer_places_piece!(brd)
   end
 end
-def alternate_player(current_player)
-  current_player == 'player' ? 'computer' : 'player'
-end
+
+# main program
+ 
 loop do
-  initialize_wins(win_counts)
-  loop do 
-  board = initialize_board
-  first_play = if FIRST_PLAYER == 'choose'
-                      prompt 'choose "player" or "computer"'
-                      choice = gets.chomp
-                      FIRST_MOVE_ORDER[choice]
-                      player = choice
-                    else player = FIRST_MOVE_ORDER[FIRST_PLAYER][0]
-                    end
-      #p first_play
-    loop do
-      display_board(board, win_counts)
-      break if completed_round?(board)
-      #first_play.each do |agent|
-        #binding.pry
-      # player_places_piece!(board)
-       # unless completed_round?(board)
-        #  move(agent, board)
-         # display_board(board, win_counts)
-      #  end
-        place_piece!(board, player)
-        player = alternate_player(player)
-        
-      end
-      #break if completed_round?(board)
-      #computer_places_piece!(board)
-      #sleep(1)
-     # break if someone_won?(board) || board_full?(board)
-     #end
-    #display_board(board, win_counts)
-     sleep(1)
-    # puts board.inspect
-    if someone_won?(board)
-      winner = detect_winner(board)
-      #binding.pry
-      count = increment_wins(win_counts, winner)
-      prompt "#{detect_winner(board)} won!"
-      prompt "#{winner} has #{count} wins"
-      sleep(2)
-    else
-      prompt "It's a tie!"
-    end
-    break if count == 5
-  end
-  prompt "play again? y/n"
-  answer = gets
-  break unless answer.downcase.start_with?('y')
+    initialize_wins(win_counts)
+    
+      loop do # game round loop
+            choice = ''
+            if FIRST_PLAYER == 'choose'
+                            loop do
+                              prompt 'choose "player" or "computer"'
+                              choice = gets.chomp
+                              break if choice == 'player' || choice == 'computer'
+                              prompt 'please enter a valid choice'
+                            end
+              first_play = FIRST_MOVE_ORDER[choice]
+            else first_play = FIRST_MOVE_ORDER[FIRST_PLAYER]
+            end
+            #p first_play
+            ##display_board(board, win_counts)
+            board = initialize_board
+            display_board(board, win_counts)
+            #until someone_won?(board) || board_full?(board)
+            loop do
+              first_play.each do |agent|
+                # binding.pry
+                # player_places_piece!(board)
+                
+                move(agent, board)
+                display_board(board, win_counts)
+                sleep(1)
+                break if someone_won?(board) || board_full?(board)
+                
+                
+              end
+              break if someone_won?(board) || board_full?(board)
+            end  
+                   # puts board.inspect
+            if someone_won?(board)
+                winner = detect_winner(board)
+                #binding.pry
+                count = increment_wins(win_counts, winner)
+                prompt "#{detect_winner(board)} won!"
+                prompt "#{winner} has #{count} wins"
+            elsif board_full?(board)
+                prompt "It's a tie!"
+            end
+            sleep(0.4)
+            break if count == 5
+         
+      end #end game round loop
+    prompt "play again? y/n"
+    answer = gets
+    break unless answer.downcase.start_with?('y')
+
 end
 
+#end game initializization loop
 prompt "thanks for playin'"
