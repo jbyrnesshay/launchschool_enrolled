@@ -69,26 +69,24 @@ def find_winning_lines(size)
   end
 
   # diagonal winning lines
-  [0,all_values.at((all_values.size - 1) - size)].each do |corner_index|
+  [0, all_values.at((all_values.size - 1) - size)].each do |corner_index|
     storage = []
     size.times do |factor|
       if corner_index == 0
         size_vectorized = size
       else size_vectorized  = size * (-1)
       end
-      storage.push(all_values.at(corner_index +(size_vectorized*factor) + factor))
+      storage.push(all_values.at(corner_index +(size_vectorized * factor) + factor))
     end
     diagonal << storage
   end
-
   across + down + diagonal
 end
- 
 p find_winning_lines(BOARD_SIZE)
 
 # create complete board display structure, custom size
 def board_structure(size, brd)
-  structure_cells = []
+  #structure_cells = []
   size_squared = size * size
   basic_structure = ''
   divider = "|"
@@ -113,10 +111,7 @@ def board_structure(size, brd)
   end
   complete_structure 
 end
-
 #board = initialize_board(BOARD_SIZE)
-
-
 
 player_hash = {}
 def create_player_values(num, hash)
@@ -131,9 +126,6 @@ def create_player_values(num, hash)
   end
   hash
 end 
-
-
-
  
 def display_board(display_it, wins, players)
   system "cls"
@@ -149,7 +141,6 @@ def display_board(display_it, wins, players)
   puts ""
 end
 
-
 def initialize_wins(win_counts)
   win_counts.each {|agent, _| win_counts[agent] = 0}
 end
@@ -161,7 +152,6 @@ def merge_player_wins(players, hash)
     hash[key] = 0
   end
 end
-
  
 def joinor(array:, delimit: ', ', junction: 'or')
   size = array.size
@@ -211,22 +201,15 @@ def increment_wins(counts, winner)
  counts[winner] += 1
 end
 
-
- 
-
 def find_at_risk_square(line, board, marker)
- 
   if board.values_at(*line).count(marker) == 2
     #binding.pry
     z= board.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
-  
   else
     nil
   end
 end
  
- 
-
 def completed_round?(board)
   someone_won?(board) || board_full?(board)
 end
