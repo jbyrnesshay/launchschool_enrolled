@@ -44,7 +44,17 @@ def describe_hand(hand, player, reveal = false)
 	values = []
 	hand.each do |x|
 				if values.empty? || player == 'player' || reveal == true
-						values << x[1]
+					 suit =  case x[0]
+					  when 'C'
+					  	'Clubs'
+					  when 'D'
+					  	'Diamonds'
+					  when 'S'
+					  	'Spades'
+					  when 'H'
+					  	'Hearts'
+					  end
+						values << x[1] + ' of ' + suit
 				elsif player == 'dealer'
 					values << 'unknown card'
 				end
@@ -119,7 +129,7 @@ deck = initialize_deck
 dealer_hand = deal_cards(deck)
 player_hand = deal_cards(deck)
 # refactor this stuff and sort out bust and win and loops and stuff
- 
+  system 'clear'
 	prompt "Dealer has: #{describe_hand(dealer_hand, 'dealer')}"
 	prompt "You have: #{describe_hand(player_hand, 'player')}"
 	prompt "your score is #{sum_hand(player_hand)}"
@@ -153,14 +163,18 @@ player_hand = deal_cards(deck)
 		
 	end
 winner = winner(dealer_hand, player_hand)
-sleep(1)
+sleep(2)
 if winner
+	  system 'clear'
 		puts "BLACKJACK!!!!"
 		puts 'winner is ' + winner
 		puts "dealer's hand held the following cards:"
-		puts " #{describe_hand(dealer_hand, 'dealer', true)} for a score of #{sum_hand(dealer_hand)}"
+		puts "SCORE = #{sum_hand(dealer_hand)}"
+		puts "#{describe_hand(dealer_hand, 'dealer', true)} for a score of #{sum_hand(dealer_hand)}"
+		puts
 		puts "your hand held the following cards:"
-		puts " #{describe_hand(player_hand, 'player')} for a score of #{sum_hand(player_hand)}"
+		puts "SCORE = #{sum_hand(player_hand)}"
+		puts "#{describe_hand(player_hand, 'player')} for a score of #{sum_hand(player_hand)}"
 else p 'its a tie' 
 end
 
