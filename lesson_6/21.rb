@@ -1,8 +1,12 @@
 require 'pry'
 
+def prompt(message)
+	puts "=> #{message}"
+end
+
 def initialize_deck
 	deck = []
-	suits = ['H', 'D', 'C', 'S']
+	suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
 	values = ('2'..'10').to_a + ['Jack','King','Queen','Ace']
 	values.each do |value|
 		suits.each do |suit|
@@ -12,10 +16,6 @@ def initialize_deck
 		end
 	end
 	deck
-end
-
-def prompt(message)
-	puts "=> #{message}"
 end
 
 def deal_cards(deck)
@@ -38,30 +38,7 @@ def hit(deck, hand)
 	hand << deck.sample
 	deck_delete(hand, deck)
 	hand
-end		
-
-def describe_hand(hand, player, reveal = false)
-	values = []
-	hand.each do |x|
-				if values.empty? || player == 'player' || reveal == true
-					 suit =  case x[0]
-					  when 'C'
-					  	'Clubs'
-					  when 'D'
-					  	'Diamonds'
-					  when 'S'
-					  	'Spades'
-					  when 'H'
-					  	'Hearts'
-					  end
-						values << x[1] + ' of ' + suit
-				elsif player == 'dealer'
-					values << 'unknown card'
-				end
-	end
-	thing = values.join(' and ')
-end
-
+end	
  
 def adjust_ace_value(values, total)
 	if total > 21
@@ -72,13 +49,16 @@ def adjust_ace_value(values, total)
 	end
 	total
 end
+
 def sum_hand(hand)
-	
-    values = hand.map {|card| card[1]}
+	#p hand
+	values = hand #hand.map {|card| card[1]}
+   
     total = values.reduce(0) do |sum, card|
-	   if card.to_i.to_s == card.to_s
-			sum += card.to_i
-		elsif card.start_with?('A')
+      
+	  	if card[1].to_i.to_s == card[1].to_s
+			sum += card[1].to_i
+		elsif card[0].start_with?('A')
 		    sum += 11
 		else 
 			sum += 10
@@ -92,7 +72,6 @@ def bust?(hand)
 end
 
 def winner?(hand)
-
 end
 
 def stay(hand)
@@ -109,7 +88,23 @@ def dealer_move(deck, hand)
     end 
 end
 
-#deck_delete(hand, deck)
+def describe_hand(hand, player, reveal = false)
+	values = []
+	 unknowns = 0
+	hand.each do |x|
+		    
+				if values.empty? || player == 'player' || reveal == true
+					 suit =  x[0]
+					values << "#{x[1]} of #{suit} "
+				elsif player == 'dealer'
+					unknowns += 1
+					ending = (unknowns > 1) ? 's' : ''
+					values[1] = "#{unknowns} unknown card" + ending
+				end
+	end
+	#p values
+	values
+end
 
 # fix this, shouldn't be this
 def winner(dealer, player)
@@ -125,60 +120,106 @@ def winner(dealer, player)
   end
 end
 
-deck = initialize_deck
-dealer_hand = deal_cards(deck)
-player_hand = deal_cards(deck)
-# refactor this stuff and sort out bust and win and loops and stuff
-  system 'clear'
-	prompt "Dealer has: #{describe_hand(dealer_hand, 'dealer')}"
-	prompt "You have: #{describe_hand(player_hand, 'player')}"
-	prompt "your score is #{sum_hand(player_hand)}"
-	prompt "Your turn:"
-	loop do 
+
+def neat_card_display(described_hand)
+
+	described_hand.each do |card|
+			cells = Array.new(25, ' ')
+			cells.fill("*", 0, 3)
+			card.split('').each_with_index do |x, k|
+				start = k + 6
+				cells.fill(x, start, 1) 
+			 end
+			cells.fill("*", 23,3)
+			cells.each {|cell| print cell}
+			puts
+			#puts "***  #{card}   ***"
+	end
+end
+
+# gameplay
+loop do 
+	deck = initialize_deck
+	dealer_hand = deal_cards(deck)
+	player_hand = deal_cards(deck)
+	# refactor this stuff and sort out bust and win and loops and stuff
+
+	  
+		
+		loop do 
+			system 'clear'
+			#prompt "Dealer has: #{describe_hand(dealer_hand, 'dealer')}"
+			prompt"  Dealer has "
+			#p dealer_hand
+			describe_dealer_hand = describe_hand(dealer_hand, 'dealer')
+			neat_card_display(describe_dealer_hand)
+			puts
+			prompt"  YOU have: "
+			describe_player_hand = describe_hand(player_hand, 'player')
+			neat_card_display(describe_player_hand)
+			puts
+			#prompt "#{describe_hand(player_hand, 'player')}"
+			prompt "your score is #{sum_hand(player_hand)}"
+			prompt "Your turn:"
 			prompt "hit or stay?"
 			answer = gets.chomp
 			break if answer == 'stay'
 			hit(deck, player_hand)
 			break if bust?(player_hand)
-			prompt "You have: #{describe_hand(player_hand, 'player')}"
-			prompt "your score is #{sum_hand(player_hand)}"
-	end
-	puts;puts
-	if bust?(player_hand) 
-		prompt "You have: #{describe_hand(player_hand, 'player')}"
-					prompt "your score is #{sum_hand(player_hand)}"
-		p 'player busted'
-	elsif !bust?(player_hand)
-		prompt "Dealer's turn"
-		dealer_move(deck, dealer_hand)
-		prompt "Dealer has: #{describe_hand(dealer_hand, 'dealer')}"
-		prompt "dealer score is  #{sum_hand(dealer_hand)}"
-		if bust?(dealer_hand) 
-			p 'dealer busted'
-			sleep(1)
+				
 		end
 		puts;puts
-		prompt "You have: #{describe_hand(player_hand, 'player')}"
-		prompt "your score is #{sum_hand(player_hand)}"
-		
+		if bust?(player_hand) 
+			system 'clear'
+			prompt "You have: "
+			describe_player_hand = describe_hand(player_hand, 'player')
+			neat_card_display(describe_player_hand)
+			prompt "your score is #{sum_hand(player_hand)}"
+			p 'player busted'
+		elsif !bust?(player_hand)
+			system 'clear'
+			prompt "Dealer's turn"
+			dealer_move(deck, dealer_hand)
+			describe_dealer_hand = describe_hand(dealer_hand, 'dealer')
+			neat_card_display(describe_dealer_hand)
+			 
+			prompt "dealer score is  #{sum_hand(dealer_hand)}"
+			sleep(1)
+			if bust?(dealer_hand) 
+				p 'dealer busted'
+				sleep(0.5)
+			end
+=begin
+			puts;puts
+			prompt "You have: #{describe_hand(player_hand, 'player')}"
+			prompt "your score is #{sum_hand(player_hand)}"
+=end			
+		end
+	winner = winner(dealer_hand, player_hand)
+	sleep(2)
+	if winner
+		  system 'clear'
+			puts "BLACKJACK!!!!"
+			puts 'winner is ' + winner
+			puts "dealer's hand held the following cards:"
+			puts "SCORE = #{sum_hand(dealer_hand)}"
+			dealer_hand_to_display = describe_hand(dealer_hand, 'dealer')
+			neat_card_display(dealer_hand_to_display)
+			#puts "#{describe_hand(dealer_hand, 'dealer', true)} 
+			puts "dealer score is #{sum_hand(dealer_hand)}"
+			puts
+			puts "your hand held the following cards:"
+			puts "SCORE = #{sum_hand(player_hand)}"
+			player_hand_to_display = describe_hand(player_hand, 'player')
+			neat_card_display(player_hand_to_display)
+			 
+	else p 'its a tie' 
 	end
-winner = winner(dealer_hand, player_hand)
-sleep(2)
-if winner
-	  system 'clear'
-		puts "BLACKJACK!!!!"
-		puts 'winner is ' + winner
-		puts "dealer's hand held the following cards:"
-		puts "SCORE = #{sum_hand(dealer_hand)}"
-		puts "#{describe_hand(dealer_hand, 'dealer', true)} for a score of #{sum_hand(dealer_hand)}"
-		puts
-		puts "your hand held the following cards:"
-		puts "SCORE = #{sum_hand(player_hand)}"
-		puts "#{describe_hand(player_hand, 'player')} for a score of #{sum_hand(player_hand)}"
-else p 'its a tie' 
+	prompt "play again?"
+	answer = gets.chomp
+	break if !answer.downcase.start_with?('y')
 end
-
-
+prompt "thanks for playing"
 
 
 =begin
