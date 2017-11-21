@@ -207,27 +207,31 @@ loop do
 		  puts "BLACKJACK!!!!"
 			puts "winner is #{winner}".upcase
 			puts "Because: #{winning_reason(dealer_hand, player_hand)}"
+			puts
 			winning_label = winner == 'player' ? 'your' : "#{winner}'s"
 			winning_hand = winner == 'player' ? player_hand : dealer_hand
 			losing_label = winner != 'player' ? 'your' : "dealer's"
 			losing_hand = winner != 'player' ? player_hand : dealer_hand
 			winning_hand_to_display = describe_hand(winning_hand, winner, true)
 			losing_hand_to_display = describe_hand(losing_hand, loser, true)
-	else
-			puts "its a tie!"
-	end
-	puts
-	if winner
 			prompt "#{winning_label.upcase} winning hand held the following cards:"
 			puts "** SCORE = #{sum_hand(winning_hand)}"
-			
 			neat_card_display(winning_hand_to_display)
 			#puts "#{describe_hand(dealer_hand, 'dealer', true)} 
 			puts
 			prompt "#{losing_label.upcase} losing hand held the following cards:"
 			puts "** SCORE = #{sum_hand(losing_hand)}"
-			
 			neat_card_display(losing_hand_to_display) 
+	else
+			puts "its a tie!"
+			puts
+			prompt "Player's hand held the following cards:"
+			puts "** SCORE = #{sum_hand(player_hand)}"
+			neat_card_display(describe_hand(player_hand, 'player'))
+			puts
+			prompt "Dealer's hand held the following cards:"
+			puts "** SCORE = #{sum_hand(dealer_hand)}"
+			neat_card_display(describe_hand(dealer_hand, 'dealer'))
 	end
 	puts
 	prompt "play again?".upcase
