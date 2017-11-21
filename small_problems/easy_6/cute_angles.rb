@@ -11,26 +11,25 @@ A degree has 60 minutes, while a minute has 60 seconds.
 Examples:
 =end
 
-
+MINUTES_PER_DEGREE = 60
+SECONDS_PER__MINUTES = 60
 def dms(angle_to_parse)
+  angle_to_parse = (180 - angle_to_parse) if angle_to_parse < 0
   angles = angle_to_parse.floor
-  minutes = (((angle_to_parse - angles) * 0.6) * 100)
-  seconds = ((minutes) - (minutes).floor) * 60
- # p angles
- # p minutes
-  #p seconds
+  minutes_and_seconds = ((angle_to_parse - angles) * 60)
+  minutes = minutes_and_seconds.floor
+  seconds =  (minutes_and_seconds - minutes) * 60
+
   #format("%02d%s%02d\'%02d\"", angles, DEGREE, minutes.to_i, seconds.to_i)
   "%02d%s%02d\'%02d\"" %[angles, DEGREE, minutes.to_i, seconds.to_i]
-  
-  #%(#{angles}#{DEGREE[]}#{minutes.to_i}\'#{seconds.to_i}\")
 end
-
-dms(76.73)
-
+ 
 
 
 
 p dms(30) == %(30°00'00")
+p dms(405)
+p dms(-45.25)
 p dms(76.73) == %(76°43'48")
 p dms(254.6) #== %(254°36'00")
 p dms(93.034773) == %(93°02'05")
