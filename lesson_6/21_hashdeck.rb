@@ -1,24 +1,24 @@
 require 'pry'
 
 def prompt(message)
-  puts "=> #{message}"
+	puts "=> #{message}"
 end
-
-def initialize_deck
-  deck = []
-  suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-  values = ('2'..'10').to_a + ['Jack', 'King', 'Queen', 'Ace']
-  values.each do |value|
-    suits.each do |suit|
-      card = []
-      card.push(suit, value)
-      deck << card
-    end
-  end
-  deck
-end
-
 =begin
+def initialize_deck
+	deck = []
+	suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+	values = ('2'..'10').to_a + ['Jack','King','Queen','Ace']
+	values.each do |value|
+		suits.each do |suit|
+			card = []
+			card.push(suit, value)
+			deck << card
+		end
+	end
+	deck
+end
+=end
+ 
 #alternate
 def initialize_deck
 	deck = {}
@@ -35,23 +35,29 @@ def initialize_deck
 	deck
 end
 p deck = initialize_deck
-exit
-=end
+ 
+
 def draw_card(deck)
-  card = deck.sample
+	suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'].sample
+	p suits
+	values = (('2'..'10').to_a + ['Jack','King','Queen','Ace']).sample
+	p values
+  card = deck[suits] 
   deck.delete(card)
+  p card
   card
+  exit
 end
 
 def deal_cards(deck)
-  hand = []
-  2.times { hand << draw_card(deck) }
-  hand
+	hand = []
+	2.times { hand << draw_card(deck) }
+	hand
 end
 
 def hit(deck, hand)
-  hand << draw_card(deck)
-end
+	hand << draw_card(deck)
+end	
  
 def adjust_ace_value(values, total)
 		values.each do |value|
@@ -93,7 +99,7 @@ def dealer_move(deck, hand)
 		hit(deck, hand)
 		prompt 'dealer hits'
 		sleep(1)
-  end 
+    end 
 end
 
 def describe_hand(hand, player, reveal = false)
