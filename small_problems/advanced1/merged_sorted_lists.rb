@@ -44,9 +44,12 @@ def helper(arrayx, arrayy)
   smallesty = 0
   arrayx.each.with_index do |n,i|
     smallestx= n
-    arrayy.each_with_index do |x, j|
-        smallesty= x  
-        results << smaller
+    if smallestx < smallest
+      results << smallestx
+    elsif smallesty.nil? || smallestx <= arrayy[x]
+      results << smallestx
+      smallest = arrayy[x]
+    elsif smallest
     end
   end
   # end
