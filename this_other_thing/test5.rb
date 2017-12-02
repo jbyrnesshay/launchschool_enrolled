@@ -25,7 +25,6 @@ words.each do |word|
   key = word.split('').sort.join
   # p key
   if result.key?(key)
-    p result[key]
     result[key].push(word)
   else
     result[key] = [word]

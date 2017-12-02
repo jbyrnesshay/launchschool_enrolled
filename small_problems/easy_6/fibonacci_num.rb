@@ -81,7 +81,7 @@ p find_fibonacci_index_by_length(2)
 puts
 puts
 puts
-
+p find_fibonacci_index_by_length(10000)
 =begin
 p find_fibonacci_index_by_length(2) == 7
 
