@@ -22,13 +22,15 @@ Write a method that takes the lengths of the 3 sides of a triangle as arguments,
 def triangle(*sides) 
   if sides.any?(&:negative?) || sides.max >= (sides.sum - sides.max)
     :invalid
-  elsif sides.all? {|side| side == sides.sum / 3}
+  #elsif sides.all? {|side| side == sides.sum / 3}
+  elsif sides.max == sides.min
     :equilateral
-  elsif sides.all? {|side| sides.count(side) == 1 }
+  #elsif sides.all? {|side| sides.count(side) == 1 }
+  elsif sides.uniq.size == sides.size
     :scalene
   #elsif sides[0] == sides[1] || sides[1] == sides[2]
   #elsif sides.count(sides.min) == 2 || sides.count(sides.max) == 2
-  elsif sides.any? {|side| sides.count(side) == 1 }
+  else #sides.any? {|side| sides.count(side) == 1 }
     :isosceles
   end
 end
