@@ -79,9 +79,9 @@ p thousand_lights4(10)
 def thousand_lights5(num_lights)
   lights = [false] * num_lights
   (1..num_lights).each do |pass|
-    lights.map!.with_index {|light, i| (i+1) % pass == 0 ? light ^ true : light }
+    lights.map!.with_index {|light, i| (i+1).modulo(pass).zero? ? light ^ true : light }
   end
   lights.map.with_index {|light, i| i+1 if light}.compact
 end
 
-p thousand_lights5(5)
+p thousand_lights5(10)
