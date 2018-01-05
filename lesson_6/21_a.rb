@@ -211,24 +211,24 @@ loop do
 			winning_hand = winner == 'player' ? player_hand : dealer_hand
 			losing_label = winner != 'player' ? 'your' : "dealer's"
 			losing_hand = winner != 'player' ? player_hand : dealer_hand
+			winning_hand_to_display = describe_hand(winning_hand, winner, true)
+			losing_hand_to_display = describe_hand(losing_hand, loser, true)
 	else
 			puts "its a tie!"
 	end
-	first_hand_to_display = winner ? describe_hand(winning_hand, winner, true) : describe_hand(player_hand, 'player')
-	second_hand_to_display = winner ? describe_hand(losing_hand, loser, true) : describe_hand(dealer_hand, 'dealer', true)
-	first_score = winner ? sum_hand(winning_hand) : sum_hand(player_hand)
-	second_score = winner ? sum_hand(losing_hand) : sum_hand(dealer_hand)
-	first_hand_label = winner ? "#{winning_label.upcase} winning" : "Player's"
-	second_hand_label = winner ? "#{losing_label.upcase} losing" : "Dealer's"
 	puts
-	prompt "#{first_hand_label} hand held the following cards:"
-	puts "** SCORE = #{first_score}"
-	neat_card_display(first_hand_to_display)
-	#puts "#{describe_hand(dealer_hand, 'dealer', true)} 
-	puts
-	prompt "#{second_hand_label.upcase} hand held the following cards:"
-	puts "** SCORE = #{second_score}"
-	neat_card_display(second_hand_to_display) 
+	if winner
+			prompt "#{winning_label.upcase} winning hand held the following cards:"
+			puts "** SCORE = #{sum_hand(winning_hand)}"
+			
+			neat_card_display(winning_hand_to_display)
+			#puts "#{describe_hand(dealer_hand, 'dealer', true)} 
+			puts
+			prompt "#{losing_label.upcase} losing hand held the following cards:"
+			puts "** SCORE = #{sum_hand(losing_hand)}"
+			
+			neat_card_display(losing_hand_to_display) 
+	end
 	puts
 	prompt "play again?".upcase
 	answer = gets.chomp

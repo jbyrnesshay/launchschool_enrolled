@@ -60,9 +60,12 @@ def bust?(hand)
 	sum_hand(hand) > 21
 end
 
+<<<<<<< HEAD
+=======
 
 
 # review stay, dealer_move, and describe_hand for necessity, complexity, and appropriateness of side effects
+>>>>>>> 4b3800ab4b2ce72cf9721c8bb2f3242f662dcda5
 def stay(hand)
 	prompt "dealer stays"
 	return hand

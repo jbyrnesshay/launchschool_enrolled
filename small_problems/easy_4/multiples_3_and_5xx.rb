@@ -35,3 +35,6 @@ limit = 1000
 options = {:limit => limit, :multiples => list}
 
 p multisum(options)
+p multisum(:limit => 10, :multiples => list)
+p multisum(:limit => 5, :multiples => list)
+p multisum(:limit => 3, :multiples => list)
