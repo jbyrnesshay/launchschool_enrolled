@@ -81,10 +81,6 @@ def bust?(hand)
 	sum_hand(hand) > 21
 end
 
-def winner?(hand)
-
-end
-
 def stay(hand)
 	prompt "dealer stays"
 	return hand
