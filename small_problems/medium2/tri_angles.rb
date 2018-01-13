@@ -25,15 +25,15 @@ def triangle(*angles)
 	case 
 	when not_triangle(angles) then :invalid
 	when angles.any? {|x| x==90} then :right
-	when angles.all? {|x| x<90} then :acute
 	when angles.any? {|x| x>90} then :obtuse
+	when angles.all? {|x| x<90} then :acute
 	end
 end
 
 def not_triangle(angles)
-	angles.count != 3 || (angles.any? {|x| x<=0}) || (angles.inject(&:+) != 180)
+	angles.any? {|x| ![Integer, Float].include?(x.class)}  ||  angles.count != 3 || angles.any? {|x| x<=0} || angles.inject(&:+) != 180 
 end
-
+p triangle(40, 'thirty', '20') == :invalid
 p triangle(50, 130) == :invalid
 p triangle(60, 70, 50) == :acute
 p triangle(30, 90, 60) == :right
