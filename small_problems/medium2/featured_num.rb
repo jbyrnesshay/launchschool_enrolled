@@ -7,7 +7,7 @@ def featured(num)
     num = ((num / 7) * 7) + 7
     test = num.to_s.split('')
     err = 'there is no possible number that fulfills those requirements' if num.to_s.size > 10
-    break if err || (test.length == test.uniq.length && num.odd? && num%7 == 0)
+    break if err || (test.length == test.uniq.length) && num.odd? #&& num%7 == 0)
   end
   result = err ? err : num
 end

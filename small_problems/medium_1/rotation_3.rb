@@ -49,7 +49,7 @@ p max_rotation2(105) == 15 # the leading zero gets dropped
 p max_rotation2(8_703_529_146) == 7_321_609_845
 
 #without preexisting methods
-
+=begin
 def max_rotation3(num)
 end
 
@@ -58,3 +58,4 @@ p max_rotation3(3) == 3
 p max_rotation3(35) == 53
 p max_rotation3(105) == 15 # the leading zero gets dropped
 p max_rotation3(8_703_529_146) == 7_321_609_845
+=end

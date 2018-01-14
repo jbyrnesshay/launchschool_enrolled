@@ -47,7 +47,7 @@ def possibilities(words)
       values << value
       p value
       result[k][x] = values
-         
+      val
       
       
       

@@ -24,7 +24,8 @@ triangle(50, 50, 50) == :invalid
 def triangle(*angles)
 	case 
 	when not_triangle(angles) then :invalid
-	when angles.any? {|x| x==90} then :right
+	when angles.any? {|x| x==90} then :right 
+    # or angles.include?(90)
 	when angles.any? {|x| x>90} then :obtuse
 	when angles.all? {|x| x<90} then :acute
 	end
