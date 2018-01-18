@@ -16,7 +16,7 @@ diamond(9)
 diamond(19)
 diamond(7)
 diamond(3)
-
+diamond(25)
 
 #try an alternative method
 
